@@ -3,6 +3,7 @@
 import datetime
 import os
 from datetime import timezone
+import dateutil.relativedelta
 
 import backoff
 import requests
@@ -30,7 +31,7 @@ def load_schema(entity):
 
 
 def get_start(key):
-    if key not in STATE or key != "end_users":
+    if key not in STATE:
         return CONFIG['start_date']
 
     return STATE[key]
@@ -164,7 +165,13 @@ def gen_request(endpoint):
         if params[query_key_lt] > sync_start.timestamp():
             last_round = True
 
-    STATE[endpoint] = utils.strftime(sync_start)
+    STATE[endpoint] = generate_backfilled_date(endpoint, sync_start)
+
+def generate_backfilled_date(entity, dt):
+    if entity == "end_users":
+        return utils.strftime(dt)
+    else:
+        return utils.strftime(dt - dateutil.relativedelta.relativedelta(months=4))
 
 
 def transform_datetimes(row):

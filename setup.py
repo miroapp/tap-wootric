@@ -12,7 +12,7 @@ setup(name='tap-wootric',
       install_requires=[
           'singer-python==5.9.0',
           'requests==2.20.0',
-          'backoff==1.9.2'
+          'backoff==1.8.0'
       ],
       entry_points='''
           [console_scripts]
